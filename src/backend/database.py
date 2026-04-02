@@ -15,6 +15,15 @@ teachers_collection = db['teachers']
 def hash_password(password):
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verify a plain-text password against a stored bcrypt hash.
+
+    :param plain_password: The password provided by the user (plain text).
+    :param hashed_password: The bcrypt hash stored in the database.
+    :return: True if the password matches the hash, False otherwise.
+    """
+    return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
 def init_database():
     """Initialize database if empty"""
 
