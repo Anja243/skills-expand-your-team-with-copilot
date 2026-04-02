@@ -13,6 +13,7 @@ teachers_collection = db['teachers']
 
 # Methods
 def hash_password(password):
+    """Hash a plain-text password and return a UTF-8 decoded bcrypt hash string."""
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
