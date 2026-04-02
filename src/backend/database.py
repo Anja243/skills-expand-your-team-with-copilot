@@ -3,7 +3,7 @@ MongoDB database configuration and setup for Mergington High School API
 """
 
 from pymongo import MongoClient
-from argon2 import PasswordHasher
+import bcrypt
 
 # Connect to MongoDB
 client = MongoClient('mongodb://localhost:27017/')
@@ -13,9 +13,7 @@ teachers_collection = db['teachers']
 
 # Methods
 def hash_password(password):
-    """Hash password using Argon2"""
-    ph = PasswordHasher()
-    return ph.hash(password)
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 def init_database():
     """Initialize database if empty"""
