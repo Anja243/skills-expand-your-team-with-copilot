@@ -361,14 +361,27 @@ section h3 {
 }
 
 button {
-  background-color: var(--primary);
-  color: white;
   border: none;
   padding: 6px 12px;
   font-size: 0.85rem;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+button[type="submit"] {
+  background-color: var(--primary);
+  color: white;
+}
+
+.confirm-btn {
+  background-color: var(--primary);
+  color: white;
+}
+
+.cancel-btn {
+  background-color: var(--border);
+  color: var(--text-primary);
 }
 
 /* Tooltip styles */
@@ -726,6 +739,7 @@ footer {
   align-items: center;
   gap: 5px;
   background-color: rgba(255, 255, 255, 0.2);
+  color: var(--primary-text);
   border-radius: 20px;
   padding: 4px 12px;
   font-size: 0.85rem;
