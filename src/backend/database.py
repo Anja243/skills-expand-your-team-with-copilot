@@ -34,11 +34,16 @@ def init_database():
             activities_collection.insert_one({"_id": name, **details})
     else:
         for name, details in initial_activities.items():
-            # Update all fields except participants to preserve sign-ups
+            # Update all fields except participants to preserve sign-ups.
+            # Use $setOnInsert for participants so new activities are initialized
+            # with an empty list, while existing sign-ups are never overwritten.
             update_fields = {k: v for k, v in details.items() if k != "participants"}
             activities_collection.update_one(
                 {"_id": name},
-                {"$set": update_fields},
+                {
+                    "$set": update_fields,
+                    "$setOnInsert": {"participants": details.get("participants", [])}
+                },
                 upsert=True
             )
 
