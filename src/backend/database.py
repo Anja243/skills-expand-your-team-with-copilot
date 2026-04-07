@@ -46,6 +46,12 @@ def init_database():
                 },
                 upsert=True
             )
+        # Ensure every activity document has a participants field.
+        # This fixes documents that may have been upserted without it.
+        activities_collection.update_many(
+            {"participants": {"$exists": False}},
+            {"$set": {"participants": []}}
+        )
 
     # Initialize teacher accounts if empty
     if teachers_collection.count_documents({}) == 0:
