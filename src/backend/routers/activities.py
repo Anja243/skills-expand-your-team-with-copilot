@@ -42,11 +42,7 @@ def get_activities(
         query["schedule_details.end_time"] = {"$lte": end_time}
     
     if difficulty:
-        # Include activities with the specified difficulty OR activities with no difficulty set
-        query["$or"] = [
-            {"difficulty": difficulty},
-            {"difficulty": {"$exists": False}}
-        ]
+        query["difficulty"] = difficulty
     
     # Query the database
     activities = {}
