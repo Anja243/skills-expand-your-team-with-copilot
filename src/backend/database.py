@@ -26,13 +26,33 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
 def init_database():
-    """Initialize database if empty"""
+    """Initialize database if empty, or update existing activities with any new fields"""
 
-    # Initialize activities if empty
+    # Initialize activities if empty, otherwise update existing ones with new fields
     if activities_collection.count_documents({}) == 0:
         for name, details in initial_activities.items():
             activities_collection.insert_one({"_id": name, **details})
-            
+    else:
+        for name, details in initial_activities.items():
+            # Update all fields except participants to preserve sign-ups.
+            # Use $setOnInsert for participants so new activities are initialized
+            # with an empty list, while existing sign-ups are never overwritten.
+            update_fields = {k: v for k, v in details.items() if k != "participants"}
+            activities_collection.update_one(
+                {"_id": name},
+                {
+                    "$set": update_fields,
+                    "$setOnInsert": {"participants": details.get("participants", [])}
+                },
+                upsert=True
+            )
+        # Ensure every activity document has a participants field.
+        # This fixes documents that may have been upserted without it.
+        activities_collection.update_many(
+            {"participants": {"$exists": False}},
+            {"$set": {"participants": []}}
+        )
+
     # Initialize teacher accounts if empty
     if teachers_collection.count_documents({}) == 0:
         for teacher in initial_teachers:
